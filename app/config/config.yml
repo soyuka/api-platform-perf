@@ -42,14 +42,15 @@ twig:
 # Doctrine Configuration
 doctrine:
     dbal:
-        driver: pdo_mysql
-        host: '%database_host%'
-        port: '%database_port%'
-        dbname: '%database_name%'
-        user: '%database_user%'
-        password: '%database_password%'
-        server_version: '5.7'
-        charset: UTF8
+        driver: pdo_sqlite
+        path: '%kernel.project_dir%/sqlite.db3'
+        # host: '%database_host%'
+        # port: '%database_port%'
+        # dbname: '%database_name%'
+        # user: '%database_user%'
+        # password: '%database_password%'
+        # server_version: '5.7'
+        # charset: UTF8
         # if using pdo_sqlite as your database driver:
         #   1. add the path in parameters.yml
         #     e.g. database_path: '%kernel.project_dir%/data/data.db3'
@@ -82,11 +83,29 @@ nelmio_cors:
         '^/': ~
 
 api_platform:
-    http_cache:
-        invalidation:
-            enabled: true
-            varnish_urls: '%varnish_urls%'
-        max_age: 0
-        shared_max_age: 3600
-        vary: ['Content-Type', 'Authorization']
-        public: true
+    formats:
+        jsonld:                        ['application/ld+json']
+        json:                          ['application/json']
+
+    eager_loading:
+        fetch_partial: true
+    collection:
+        order_parameter_name:          'order'
+        order:                         'ASC'
+        pagination:
+            client_enabled:            true
+            client_items_per_page:     true
+            items_per_page:            10
+    enable_swagger: true
+    enable_swagger_ui: true
+
+services:
+    # Should be declared in production
+    api_platform.cache.metadata.property:
+        class: Symfony\Component\Cache\Adapter\ApcuAdapter
+    api_platform.cache.metadata.resource:
+        class: Symfony\Component\Cache\Adapter\ApcuAdapter
+    api_platform.cache.route_name_resolver:
+        class: Symfony\Component\Cache\Adapter\ApcuAdapter
+    api_platform.cache_identifiers_extractor:
+        class: Symfony\Component\Cache\Adapter\ApcuAdapter
