@@ -87,8 +87,8 @@ api_platform:
         jsonld:                        ['application/ld+json']
         json:                          ['application/json']
 
-    eager_loading:
-        fetch_partial: true
+    # eager_loading:
+    #     fetch_partial: true
     collection:
         order_parameter_name:          'order'
         order:                         'ASC'
