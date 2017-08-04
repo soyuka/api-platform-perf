@@ -1,0 +1,37 @@
+diff --git a/src/EventListener/SerializeListener.php b/src/EventListener/SerializeListener.php
+index 11555300..e9536b63 100644
+--- a/src/EventListener/SerializeListener.php
++++ b/src/EventListener/SerializeListener.php
+@@ -60,7 +60,9 @@ final class SerializeListener
+ 
+         $context = $this->serializerContextBuilder->createFromRequest($request, true, $attributes);
+         $resources = [];
+-        $context['resources'] = &$resources;
++        $context['resources'] = function ($iri) use (&$resources) {
++            $resources[$iri] = $iri;
++        };
+ 
+         $event->setControllerResult($this->serializer->serialize($controllerResult, $request->getRequestFormat(), $context));
+ 
+diff --git a/src/Serializer/AbstractItemNormalizer.php b/src/Serializer/AbstractItemNormalizer.php
+index 1d46fe5b..3149175e 100644
+--- a/src/Serializer/AbstractItemNormalizer.php
++++ b/src/Serializer/AbstractItemNormalizer.php
+@@ -88,7 +88,7 @@ abstract class AbstractItemNormalizer extends AbstractObjectNormalizer
+ 
+         if (isset($context['resources'])) {
+             $resource = $context['iri'] ?? $this->iriConverter->getIriFromItem($object);
+-            $context['resources'][$resource] = $resource;
++            $context['resources']($resource);
+         }
+ 
+         return parent::normalize($object, $format, $context);
+@@ -439,7 +439,7 @@ abstract class AbstractItemNormalizer extends AbstractObjectNormalizer
+ 
+         $iri = $this->iriConverter->getIriFromItem($relatedObject);
+         if (isset($context['resources'])) {
+-            $context['resources'][$iri] = $iri;
++            $context['resources']($iri);
+         }
+ 
+         return $iri;

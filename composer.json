@@ -23,7 +23,7 @@
     ],
     "require": {
         "php": ">=7.0",
-        "api-platform/core": "dev-master#5dc1b08ba7483f03b0148e9bfe33014acc4266e3",
+        "api-platform/core": "dev-master",
         "doctrine/doctrine-bundle": "^1.6",
         "doctrine/orm": "^2.5",
         "guzzlehttp/guzzle": "^6.0",
